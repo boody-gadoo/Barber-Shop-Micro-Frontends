@@ -3,9 +3,11 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   plugins: [react()],
+  base: '/__mfe/services/',
   server: {
     port: 3002,
     cors: true,
+    host: true,
   },
   preview: {
     port: 3002,

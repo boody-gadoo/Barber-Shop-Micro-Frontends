@@ -11,7 +11,7 @@
     "noFallthroughCasesInSwitch": true
   },
   "files": [
-    "src/main.ts"
+    "src/main.single-spa.ts"
   ],
   "include": [
     "src/**/*.d.ts"

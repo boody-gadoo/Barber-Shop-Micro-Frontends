@@ -72,7 +72,9 @@
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
+            "host": "0.0.0.0",
             "port": 3003,
+            "allowedHosts": ["all"]
           },
           "configurations": {
             "production": {

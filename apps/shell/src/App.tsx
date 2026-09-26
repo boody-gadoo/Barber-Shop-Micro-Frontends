@@ -12,6 +12,7 @@ import { ContactPage } from './pages/ContactPage';
 import { AboutPage } from './pages/AboutPage';
 import { MyBookingsPage } from './pages/MyBookingsPage';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { logger } from './utils/logger';
 
 function AppContent(): JSX.Element {
   return (

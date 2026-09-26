@@ -3,6 +3,7 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   plugins: [react()],
+  base: '/__mfe/services/',
   build: {
     lib: {
       entry: 'src/single-spa.tsx',

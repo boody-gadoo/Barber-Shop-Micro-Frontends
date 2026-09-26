@@ -4,11 +4,23 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 3000,
+    port: 5000,
     cors: true,
+    host: true,
+    proxy: {
+      '/__mfe/services': {
+        target: 'http://127.0.0.1:3002',
+        changeOrigin: true,
+      },
+      '/__mfe/booking': {
+        target: 'http://127.0.0.1:3003',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/__mfe\/booking/, ''),
+      },
+    },
   },
   preview: {
-    port: 3000,
+    port: 5000,
     strictPort: true,
     cors: true,
   },
