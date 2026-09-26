@@ -1,0 +1,192 @@
+{
+  "version": "1.0",
+  "canaryStrategy": "progressive",
+  "stages": [
+    {
+      "name": "Canary (10%)",
+      "percentage": 10,
+      "duration": 300,
+      "successCriteria": {
+        "errorRate": 0.01,
+        "latencyP99": 3000,
+        "availabilityThreshold": 0.99
+      },
+      "monitoring": {
+        "checkInterval": 30,
+        "samplingRate": 1.0
+      },
+      "alerts": [
+        "high-error-rate",
+        "high-latency",
+        "unhealthy-hosts"
+      ],
+      "description": "Initial canary with 10% of traffic"
+    },
+    {
+      "name": "Canary (25%)",
+      "percentage": 25,
+      "duration": 300,
+      "successCriteria": {
+        "errorRate": 0.005,
+        "latencyP99": 2800,
+        "availabilityThreshold": 0.999
+      },
+      "monitoring": {
+        "checkInterval": 30,
+        "samplingRate": 1.0
+      },
+      "alerts": [
+        "high-error-rate",
+        "high-latency",
+        "unhealthy-hosts"
+      ],
+      "description": "Increase to 25% of traffic with stricter thresholds"
+    },
+    {
+      "name": "Canary (50%)",
+      "percentage": 50,
+      "duration": 300,
+      "successCriteria": {
+        "errorRate": 0.001,
+        "latencyP99": 2600,
+        "availabilityThreshold": 0.999
+      },
+      "monitoring": {
+        "checkInterval": 30,
+        "samplingRate": 1.0
+      },
+      "alerts": [
+        "high-error-rate",
+        "high-latency",
+        "unhealthy-hosts",
+        "poor-web-vitals"
+      ],
+      "description": "Production-level testing at 50% traffic"
+    },
+    {
+      "name": "Finalize (100%)",
+      "percentage": 100,
+      "duration": 300,
+      "successCriteria": {
+        "errorRate": 0.001,
+        "latencyP99": 2500,
+        "availabilityThreshold": 0.999
+      },
+      "monitoring": {
+        "checkInterval": 60,
+        "samplingRate": 0.1
+      },
+      "alerts": [
+        "high-error-rate",
+        "high-latency",
+        "unhealthy-hosts",
+        "poor-web-vitals",
+        "high-memory",
+        "high-cpu"
+      ],
+      "description": "Complete cutover with full production traffic"
+    }
+  ],
+  "rollbackTriggers": {
+    "errorRate": 0.02,
+    "latencyP99": 5000,
+    "availabilityThreshold": 0.95,
+    "healthCheckFailures": 3,
+    "consecutiveErrors": 10
+  },
+  "featureFlags": {
+    "newBookingFlow": {
+      "enabled": true,
+      "canary": true,
+      "initialPercentage": 10,
+      "targetPercentage": 100,
+      "description": "New booking user interface"
+    },
+    "enhancedSearch": {
+      "enabled": true,
+      "canary": true,
+      "initialPercentage": 25,
+      "targetPercentage": 100,
+      "description": "Enhanced services search algorithm"
+    },
+    "paymentOptimization": {
+      "enabled": true,
+      "canary": true,
+      "initialPercentage": 5,
+      "targetPercentage": 100,
+      "description": "Payment processing optimization"
+    },
+    "experimentalAnalytics": {
+      "enabled": false,
+      "canary": false,
+      "description": "Experimental analytics (disabled by default)"
+    }
+  },
+  "betaTesters": {
+    "enabled": true,
+    "earlyAccessGroups": [
+      "barber-shop:internal",
+      "barber-shop:partners",
+      "barber-shop:beta-program"
+    ],
+    "betaUsers": [
+      "user:admin-1",
+      "user:admin-2",
+      "user:support-lead"
+    ]
+  },
+  "metrics": {
+    "businessMetrics": [
+      {
+        "name": "BookingSuccessRate",
+        "threshold": 0.95,
+        "description": "% of successful bookings"
+      },
+      {
+        "name": "AverageBookingTime",
+        "threshold": 180000,
+        "description": "Average time to complete booking (ms)"
+      },
+      {
+        "name": "UserEngagement",
+        "threshold": 0.75,
+        "description": "% of users completing action"
+      }
+    ],
+    "technicalMetrics": [
+      {
+        "name": "APILatency",
+        "threshold": 2500,
+        "description": "API p99 latency (ms)"
+      },
+      {
+        "name": "ErrorRate",
+        "threshold": 0.01,
+        "description": "HTTP 5xx error rate"
+      },
+      {
+        "name": "CacheHitRate",
+        "threshold": 0.85,
+        "description": "CDN cache hit rate"
+      }
+    ]
+  },
+  "notifications": {
+    "onStart": true,
+    "onStageChange": true,
+    "onSuccess": true,
+    "onRollback": true,
+    "onComplete": true,
+    "channels": [
+      "slack:#deployments",
+      "pagerduty:engineering-on-call",
+      "email:devops-team@barber-shop.com"
+    ]
+  },
+  "rollbackPolicy": {
+    "automatic": true,
+    "manualOnly": false,
+    "rollbackDelay": 60,
+    "maxRollbackAttempts": 3
+  }
+}

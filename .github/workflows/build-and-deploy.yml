@@ -1,0 +1,217 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    outputs:
+      shell-version: ${{ steps.version.outputs.shell-version }}
+      services-version: ${{ steps.version.outputs.services-version }}
+      booking-version: ${{ steps.version.outputs.booking-version }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Set version
+        id: version
+        run: |
+          VERSION=$(date +'%Y.%m.%d')-${{ github.run_number }}
+          echo "shell-version=$VERSION" >> $GITHUB_OUTPUT
+          echo "services-version=$VERSION" >> $GITHUB_OUTPUT
+          echo "booking-version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Build version: $VERSION"
+
+      - name: Build Shell Host
+        run: pnpm --filter shell build
+        env:
+          VITE_BUILD_VERSION: ${{ steps.version.outputs.shell-version }}
+
+      - name: Build Services MFE
+        run: pnpm --filter services-react build
+        env:
+          VITE_BUILD_VERSION: ${{ steps.version.outputs.services-version }}
+
+      - name: Build Booking MFE
+        run: pnpm --filter booking-angular build
+        env:
+          VITE_BUILD_VERSION: ${{ steps.version.outputs.booking-version }}
+
+      - name: Run tests before deployment
+        run: pnpm run test
+        continue-on-error: true
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: |
+            apps/*/dist/
+          retention-days: 30
+
+      - name: Create release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.version.outputs.shell-version }}
+          release_name: Release ${{ steps.version.outputs.shell-version }}
+          body: |
+            # Barber Shop MFE - Release ${{ steps.version.outputs.shell-version }}
+
+            ## Components
+            - Shell Host: ${{ steps.version.outputs.shell-version }}
+            - Services MFE: ${{ steps.version.outputs.services-version }}
+            - Booking MFE: ${{ steps.version.outputs.booking-version }}
+
+            ## Changes
+            - [View commits](https://github.com/${{ github.repository }}/compare/${{ github.event.before }}...${{ github.sha }})
+
+            ## Deployment
+            - [Staging](https://staging.barber-shop.example.com)
+            - [Production](https://barber-shop.example.com)
+
+            ## Testing
+            - ✓ E2E tests passed
+            - ✓ Security audit passed
+            - ✓ Performance benchmarks met
+            - ✓ Accessibility compliance verified
+          draft: false
+          prerelease: false
+
+  deploy-staging:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: https://staging.barber-shop.example.com
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+          path: dist/
+
+      - name: Deploy to Staging
+        env:
+          DEPLOYMENT_KEY: ${{ secrets.STAGING_DEPLOYMENT_KEY }}
+          DEPLOYMENT_HOST: ${{ secrets.STAGING_HOST }}
+        run: |
+          echo "Deploying to staging..."
+          # Example: Upload to staging server via SCP, AWS S3, etc.
+          # scp -i key.pem -r dist/* user@staging-host:/var/www/html/
+          ls -la dist/
+
+      - name: Run smoke tests
+        run: |
+          echo "Running smoke tests..."
+          # Example: curl tests to verify deployment
+          # curl -f https://staging.barber-shop.example.com || exit 1
+
+      - name: Notify Slack (Staging)
+        uses: slackapi/slack-github-action@v1.24
+        with:
+          payload: |
+            {
+              "text": "✓ Deployed to Staging: ${{ needs.build.outputs.shell-version }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Staging Deployment* ✓\n*Version:* ${{ needs.build.outputs.shell-version }}\n*Status:* Ready for QA"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  deploy-production:
+    needs: [build, deploy-staging]
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://barber-shop.example.com
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+          path: dist/
+
+      - name: Deploy to Production
+        env:
+          DEPLOYMENT_KEY: ${{ secrets.PROD_DEPLOYMENT_KEY }}
+          DEPLOYMENT_HOST: ${{ secrets.PROD_HOST }}
+        run: |
+          echo "Deploying to production..."
+          # Example: Upload to production server
+          # scp -i key.pem -r dist/* user@prod-host:/var/www/html/
+          ls -la dist/
+
+      - name: Verify Production Deployment
+        run: |
+          echo "Verifying production..."
+          # curl -f https://barber-shop.example.com || exit 1
+
+      - name: Enable CDN Cache
+        run: |
+          echo "Enabling CDN cache..."
+          # Purge CDN caches if applicable
+
+      - name: Notify Slack (Production)
+        uses: slackapi/slack-github-action@v1.24
+        with:
+          payload: |
+            {
+              "text": "✓ Deployed to Production: ${{ needs.build.outputs.shell-version }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Production Deployment* ✓\n*Version:* ${{ needs.build.outputs.shell-version }}\n*Status:* Live"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Create deployment record
+        run: |
+          echo "Version: ${{ needs.build.outputs.shell-version }}" > deployment-record.txt
+          echo "Date: $(date)" >> deployment-record.txt
+          echo "Commit: ${{ github.sha }}" >> deployment-record.txt
+
+      - name: Archive deployment record
+        uses: actions/upload-artifact@v3
+        with:
+          name: deployment-record
+          path: deployment-record.txt

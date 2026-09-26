@@ -1,0 +1,24 @@
+{
+  "name": "@design-tokens/core",
+  "version": "0.0.1",
+  "description": "Egyptian barber shop design tokens - colors, typography, spacing, motion",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json",
+    "./colors": "./src/colors.ts",
+    "./typography": "./src/typography.ts",
+    "./spacing": "./src/spacing.ts",
+    "./radius": "./src/radius.ts",
+    "./shadows": "./src/shadows.ts",
+    "./breakpoints": "./src/breakpoints.ts",
+    "./motion": "./src/motion.ts",
+    "./css": "./src/global.css"
+  },
+  "files": ["src"],
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": ["design-tokens", "design-system", "barber-shop", "egyptian"],
+  "license": "MIT"
+}

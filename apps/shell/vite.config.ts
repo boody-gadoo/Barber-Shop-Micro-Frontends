@@ -1,0 +1,83 @@
+import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
+import federation from '@originjs/vite-plugin-federation';
+
+export default defineConfig({
+  plugins: [
+    react(),
+    federation({
+      name: 'shell',
+      filename: 'remoteEntry.js',
+      remotes: {
+        services: 'http://localhost:3002/assets/remoteEntry.js',
+        booking: 'http://localhost:3003/remoteEntry.js',
+      },
+      shared: {
+        react: { singleton: true, strictVersion: true },
+        'react-dom': { singleton: true, strictVersion: true },
+        'react-router-dom': { singleton: true, strictVersion: true },
+        '@design-tokens/core': { singleton: true, strictVersion: false },
+        '@api-contracts/core': { singleton: true, strictVersion: false },
+        '@shared-types/core': { singleton: true, strictVersion: false },
+      },
+    }),
+  ],
+  server: {
+    port: 3000,
+    cors: true,
+  },
+  preview: {
+    port: 3000,
+    strictPort: true,
+    cors: true,
+  },
+  publicDir: '../../public',
+  build: {
+    target: 'ES2022',
+    outDir: 'dist',
+    sourcemap: false,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+        pure_funcs: ['console.log', 'console.debug'],
+        passes: 3, // Run compression 3 times for better optimization
+      },
+      mangle: true,
+      format: {
+        comments: false, // Remove all comments
+      },
+    },
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          // Vendor chunks
+          if (id.includes('node_modules/react')) return 'chunk-react';
+          if (id.includes('node_modules/react-dom')) return 'chunk-react-dom';
+          if (id.includes('node_modules/react-router-dom')) return 'chunk-router';
+          // Design system chunks
+          if (id.includes('@design-tokens')) return 'chunk-design-tokens';
+          // API contracts
+          if (id.includes('@api-contracts') || id.includes('@shared-types')) return 'chunk-api';
+          // Shared packages
+          if (id.includes('@barber-shop/shared')) return 'chunk-shared';
+        },
+        assetFileNames: (assetInfo) => {
+          const info = assetInfo.name.split('.');
+          const ext = info[info.length - 1];
+          if (/png|jpe?g|gif|svg|webp/.test(ext)) {
+            return `assets/images/[name]-[hash][extname]`;
+          } else if (/woff|woff2|ttf|otf|eot/.test(ext)) {
+            return `assets/fonts/[name]-[hash][extname]`;
+          }
+          return `assets/[name]-[hash][extname]`;
+        },
+        chunkFileNames: 'js/[name]-[hash].js',
+        entryFileNames: 'js/[name]-[hash].js',
+      },
+    },
+    chunkSizeWarningLimit: 500,
+    cssCodeSplit: true, // Extract CSS to separate files for better caching
+  },
+});

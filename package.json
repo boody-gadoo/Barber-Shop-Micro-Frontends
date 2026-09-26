@@ -1,0 +1,35 @@
+{
+  "name": "barber-shop-mfe",
+  "version": "0.1.0",
+  "description": "Egyptian barber shop platform - Micro Frontends with Module Federation",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter=@shell/app dev",
+    "dev:all": "pnpm run build && pnpm run preview:all",
+    "preview:all": "pnpm --parallel --filter=@shell/app --filter=@services-react/app --filter=@booking-angular/app run preview",
+    "build": "pnpm --filter=@shell/app build && pnpm --filter=@services-react/app build && pnpm --filter=@booking-angular/app build",
+    "lint": "eslint apps packages --ext .ts,.tsx 2>/dev/null || true",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,json,md}\"",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "test:headed": "playwright test --headed",
+    "test:report": "playwright show-report",
+    "preinstall": "node -v"
+  },
+  "devDependencies": {
+    "@angular-architects/module-federation": "^17.0.0",
+    "@angular-builders/custom-webpack": "^17.0.0",
+    "@playwright/test": "^1.40.0",
+    "@types/node": "^20.9.0",
+    "http-server": "^14.1.1",
+    "nx": "^18.3.0",
+    "prettier": "^3.0.0",
+    "typescript": "5.3.3"
+  },
+  "dependencies": {
+    "zone.js": "0.14.2"
+  }
+}

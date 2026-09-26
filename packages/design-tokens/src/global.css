@@ -1,0 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Tajawal:wght@300;400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Tajawal', sans-serif;
+  background-color: #f8f5f0;
+  color: #211e1b;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Scrollbar Customization */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #f8f5f0;
+}
+::-webkit-scrollbar-thumb {
+  background: #b66a3c;
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #c97f4f;
+}
+
+/* Dark Theme Overrides */
+html.dark-theme body {
+  background-color: #1a1614;
+  color: #f8f5f0;
+}
+html.dark-theme ::-webkit-scrollbar-track {
+  background: #1a1614;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 48px;
+  line-height: 56px;
+}
+
+h2 {
+  font-size: 36px;
+  line-height: 44px;
+}
+
+h3 {
+  font-size: 28px;
+  line-height: 36px;
+}
+
+h4 {
+  font-size: 22px;
+  line-height: 30px;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input, select, textarea {
+  font-family: inherit;
+}
+
+/* RTL Support */
+[dir='rtl'] {
+  direction: rtl;
+  text-align: right;
+}
+
+[dir='ltr'] {
+  direction: ltr;
+  text-align: left;
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+#root, app-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}

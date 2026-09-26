@@ -1,0 +1,9 @@
+{
+  "extends": "nx/presets/npm.json",
+  "nxCloudId": null,
+  "sourceRoot": ".",
+  "projectType": "library",
+  "defaultBase": "main",
+  "defaultProject": null,
+  "plugins": [],
+}

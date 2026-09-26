@@ -1,0 +1,45 @@
+{
+  "name": "@booking-angular/app",
+  "version": "0.0.1",
+  "description": "Booking Angular MFE - Module Federation remote for barber shop",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "preview": "npx http-server dist -p 3003 --cors",
+    "dev": "ng serve",
+    "test": "ng test",
+    "lint": "ng lint"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "17.3.12",
+    "@angular/common": "17.3.12",
+    "@angular/compiler": "17.3.12",
+    "@angular/core": "17.3.12",
+    "@angular/forms": "17.3.12",
+    "@angular/platform-browser": "17.3.12",
+    "@angular/platform-browser-dynamic": "17.3.12",
+    "@angular/router": "17.3.12",
+    "@api-contracts/core": "workspace:*",
+    "@design-tokens/core": "workspace:*",
+    "@shared-types/core": "workspace:*",
+    "lucide-angular": "^1.0.0",
+    "rxjs": "7.8.1",
+    "tslib": "2.6.2",
+    "zone.js": "0.14.2"
+  },
+  "devDependencies": {
+    "@angular-architects/module-federation": "^17.0.8",
+    "@angular-devkit/build-angular": "17.3.12",
+    "@angular/cli": "17.3.12",
+    "@angular/compiler-cli": "17.3.12",
+    "@types/node": "^20.9.0",
+    "typescript": "5.3.3",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1",
+    "webpack-merge": "^5.10.0"
+  }
+}

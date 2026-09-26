@@ -1,0 +1,18 @@
+{
+  "name": "@shared-types/core",
+  "version": "0.0.1",
+  "description": "Shared TypeScript types and enums for barber shop micro frontends",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json",
+    "./enums": "./src/enums.ts",
+    "./common": "./src/common.ts"
+  },
+  "files": ["src"],
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": ["types", "enums", "barber-shop"],
+  "license": "MIT"
+}

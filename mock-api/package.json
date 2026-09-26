@@ -1,0 +1,17 @@
+{
+  "name": "@mock-api/server",
+  "version": "0.0.1",
+  "description": "Mock API server using MSW (Mock Service Worker) for barber shop",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./handlers": "./src/handlers/index.ts",
+    "./fixtures": "./src/fixtures/index.ts"
+  },
+  "files": ["src"],
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": ["mock-api", "msw", "barber-shop"],
+  "license": "MIT"
+}

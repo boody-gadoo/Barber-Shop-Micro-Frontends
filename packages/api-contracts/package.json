@@ -1,0 +1,20 @@
+{
+  "name": "@api-contracts/core",
+  "version": "0.0.1",
+  "description": "API contracts and TypeScript interfaces for barber shop backend communication",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json",
+    "./services": "./src/services.ts",
+    "./booking": "./src/booking.ts",
+    "./barbers": "./src/barbers.ts",
+    "./common": "./src/common.ts"
+  },
+  "files": ["src"],
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": ["api-contracts", "types", "barber-shop"],
+  "license": "MIT"
+}

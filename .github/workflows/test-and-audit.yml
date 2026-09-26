@@ -1,0 +1,246 @@
+name: Test & Audit Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint code
+        run: pnpm run lint
+        continue-on-error: true
+
+      - name: Type check
+        run: pnpm run typecheck
+        continue-on-error: true
+
+      - name: Build all MFEs
+        run: pnpm run build
+
+      - name: Run E2E tests
+        run: pnpm run test
+
+      - name: Generate test report
+        if: always()
+        run: pnpm run test:report || true
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: |
+            test-results/
+            playwright-report/
+            coverage/
+
+  security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run npm audit
+        run: pnpm audit --audit-level=moderate
+        continue-on-error: true
+
+      - name: Check for known vulnerabilities
+        run: pnpm audit --json > audit-results.json || true
+
+      - name: Upload security audit
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-audit
+          path: audit-results.json
+
+      - name: OWASP Dependency Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          path: '.'
+          format: 'JSON'
+          args: >
+            --enableExperimental
+
+      - name: Upload dependency check
+        uses: actions/upload-artifact@v3
+        with:
+          name: dependency-check-report
+          path: reports/
+
+  performance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build all MFEs
+        run: pnpm run build
+
+      - name: Analyze bundle size
+        run: |
+          echo "## Bundle Size Analysis" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Shell Host
+          SHELL_SIZE=$(du -sh apps/shell/dist | cut -f1)
+          echo "- **Shell Host:** $SHELL_SIZE" >> $GITHUB_STEP_SUMMARY
+          
+          # Services MFE
+          SERVICES_SIZE=$(du -sh apps/services-react/dist | cut -f1)
+          echo "- **Services MFE:** $SERVICES_SIZE" >> $GITHUB_STEP_SUMMARY
+          
+          # Booking MFE
+          BOOKING_SIZE=$(du -sh apps/booking-angular/dist | cut -f1)
+          echo "- **Booking MFE:** $BOOKING_SIZE" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload bundle report
+        uses: actions/upload-artifact@v3
+        with:
+          name: bundle-analysis
+          path: |
+            apps/*/dist/
+
+  accessibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build all MFEs
+        run: pnpm run build
+
+      - name: Run accessibility tests
+        run: pnpm run test -- accessibility-wcag.spec.ts
+        continue-on-error: true
+
+      - name: Upload accessibility report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: accessibility-report
+          path: |
+            playwright-report/
+            test-results/
+
+  code-quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run SonarQube analysis
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          npm install -g sonar-scanner
+          sonar-scanner \
+            -Dsonar.projectKey=barber-shop-mfe \
+            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+        continue-on-error: true
+
+  summary:
+    runs-on: ubuntu-latest
+    needs: [test, security, performance, accessibility, code-quality]
+    if: always()
+
+    steps:
+      - name: Generate summary
+        run: |
+          echo "# Phase 6 Testing & Audit Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Pipeline Status" >> $GITHUB_STEP_SUMMARY
+          echo "- **E2E Tests:** ${{ needs.test.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Security Audit:** ${{ needs.security.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Performance:** ${{ needs.performance.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Accessibility:** ${{ needs.accessibility.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Code Quality:** ${{ needs.code-quality.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "- Test Results (Playwright)" >> $GITHUB_STEP_SUMMARY
+          echo "- Security Audit (npm audit)" >> $GITHUB_STEP_SUMMARY
+          echo "- Bundle Analysis" >> $GITHUB_STEP_SUMMARY
+          echo "- Accessibility Report" >> $GITHUB_STEP_SUMMARY
+          echo "- Code Quality (SonarQube)" >> $GITHUB_STEP_SUMMARY
+
+      - name: Fail if critical tests failed
+        if: needs.test.result == 'failure'
+        run: exit 1

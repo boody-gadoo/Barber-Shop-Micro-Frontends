@@ -1,0 +1,69 @@
+name: Validate
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Lint, Type Check, Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    strategy:
+      matrix:
+        node-version: ['20.11.1']
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Type Check
+        run: pnpm typecheck
+
+      - name: Build
+        run: pnpm build
+
+  status-check:
+    name: Status Check
+    runs-on: ubuntu-latest
+    needs: [validate]
+    if: always()
+
+    steps:
+      - name: Check if validation passed
+        run: |
+          if [[ "${{ needs.validate.result }}" != "success" ]]; then
+            echo "❌ Validation failed"
+            exit 1
+          fi
+          echo "✅ All checks passed"

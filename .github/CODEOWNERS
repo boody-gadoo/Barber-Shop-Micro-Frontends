@@ -1,0 +1,31 @@
+# Code Owners for Barber Shop Micro Frontends
+
+# Default ownership
+* @zakriahossam212-blip
+
+# Architecture and documentation
+/docs/ @zakriahossam212-blip
+/PHASE* @zakriahossam212-blip
+
+# Shared packages
+/packages/ @zakriahossam212-blip
+/packages/design-tokens/ @zakriahossam212-blip
+/packages/api-contracts/ @zakriahossam212-blip
+/packages/shared-types/ @zakriahossam212-blip
+
+# Configuration
+/nx.json @zakriahossam212-blip
+/pnpm-workspace.yaml @zakriahossam212-blip
+/tsconfig.base.json @zakriahossam212-blip
+/package.json @zakriahossam212-blip
+
+# CI/CD
+/.github/ @zakriahossam212-blip
+
+# Root documentation
+/README.md @zakriahossam212-blip
+
+# MFE Ownership (to be updated as teams grow)
+# /apps/shell/ 
+# /apps/booking-angular/
+# /apps/services-react/
