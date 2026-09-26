@@ -1,0 +1,1 @@
+- [Single-spa Replit setup](single-spa-replit.md) — Angular’s remote needs shared Zone.js and a UMD global loader; Vite remotes need shell-origin proxy paths.

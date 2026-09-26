@@ -7,6 +7,7 @@ export default defineConfig({
     port: 5000,
     cors: true,
     host: true,
+    allowedHosts: true,
     proxy: {
       '/__mfe/services': {
         target: 'http://127.0.0.1:3002',

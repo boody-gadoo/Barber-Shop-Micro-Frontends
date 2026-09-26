@@ -1,5 +1,6 @@
 import React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
+import 'zone.js';
 import { registerApplication, start } from 'single-spa';
 import singleSpaReact from 'single-spa-react';
 import type { LifeCycles } from 'single-spa';
