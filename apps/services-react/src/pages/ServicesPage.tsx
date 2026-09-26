@@ -115,7 +115,7 @@ export function ServicesPage(): JSX.Element {
                   </div>
                   <div className="service-duration">{service.duration} min</div>
                 </div>
-                <Link to={`/services/${service.id}`} className="cta-button">
+                <Link to={`/${service.id}`} className="cta-button">
                   View Details
                 </Link>
               </div>

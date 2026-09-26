@@ -17,7 +17,7 @@
             },
             "outputPath": "apps/booking-angular/dist",
             "index": "apps/booking-angular/src/index.html",
-            "main": "apps/booking-angular/src/main.ts",
+            "main": "apps/booking-angular/src/main.single-spa.ts",
             "polyfills": [
               "zone.js"
             ],

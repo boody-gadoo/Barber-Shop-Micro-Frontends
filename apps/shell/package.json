@@ -2,7 +2,7 @@
   "name": "@shell/app",
   "version": "0.0.1",
   "type": "module",
-  "description": "Shell/Host application - Module Federation host for barber shop micro frontends",
+  "description": "single-spa root application for the barber shop platform",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -17,10 +17,11 @@
     "lucide-react": "^1.48.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-router-dom": "6.20.1"
+    "react-router-dom": "6.20.1",
+    "single-spa": "^6.0.3",
+    "single-spa-react": "^6.0.1"
   },
   "devDependencies": {
-    "@originjs/vite-plugin-federation": "^1.4.1",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@vitejs/plugin-react": "^4.2.1",

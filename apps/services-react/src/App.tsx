@@ -5,11 +5,10 @@ import { OffersPage } from './pages/OffersPage';
 
 export default function App(): JSX.Element {
   return (
-    <Router>
+    <Router basename="/services">
       <Routes>
         <Route path="/" element={<ServicesPage />} />
-        <Route path="/services" element={<ServicesPage />} />
-        <Route path="/services/:id" element={<ServiceDetailsPage />} />
+        <Route path="/:id" element={<ServiceDetailsPage />} />
         <Route path="/offers" element={<OffersPage />} />
       </Routes>
     </Router>

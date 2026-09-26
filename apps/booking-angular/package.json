@@ -1,7 +1,7 @@
 {
   "name": "@booking-angular/app",
   "version": "0.0.1",
-  "description": "Booking Angular MFE - Module Federation remote for barber shop",
+  "description": "Booking Angular single-spa application",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -27,11 +27,12 @@
     "@shared-types/core": "workspace:*",
     "lucide-angular": "^1.0.0",
     "rxjs": "7.8.1",
+    "single-spa": "^6.0.3",
+    "single-spa-angular": "^8.1.0",
     "tslib": "2.6.2",
     "zone.js": "0.14.2"
   },
   "devDependencies": {
-    "@angular-architects/module-federation": "^17.0.8",
     "@angular-devkit/build-angular": "17.3.12",
     "@angular/cli": "17.3.12",
     "@angular/compiler-cli": "17.3.12",

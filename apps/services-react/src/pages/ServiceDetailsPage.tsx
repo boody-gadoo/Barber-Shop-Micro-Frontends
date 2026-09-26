@@ -11,7 +11,7 @@ export function ServiceDetailsPage(): JSX.Element {
       <div className="service-details">
         <h2>Failed to load service</h2>
         <p>{error.message}</p>
-        <Link to="/services" className="cta-button">
+        <Link to="/" className="cta-button">
           Back to Services
         </Link>
       </div>
@@ -32,7 +32,7 @@ export function ServiceDetailsPage(): JSX.Element {
       <div className="service-details">
         <h2>Service not found</h2>
         <p>The service you're looking for doesn't exist.</p>
-        <Link to="/services" className="cta-button">
+        <Link to="/" className="cta-button">
           Back to Services
         </Link>
       </div>
@@ -86,9 +86,9 @@ export function ServiceDetailsPage(): JSX.Element {
           </div>
 
           {/* CTA */}
-          <Link to={`/booking?serviceId=${service.id}`} className="details-cta">
+          <a href={`/booking?serviceId=${service.id}`} className="details-cta">
             Book This Service
-          </Link>
+          </a>
         </div>
       </div>
 
@@ -109,7 +109,7 @@ export function ServiceDetailsPage(): JSX.Element {
 
         {/* Back to Services Link */}
         <div style={{ marginTop: '40px' }}>
-          <Link to="/services" style={{ color: '#b66a3c', textDecoration: 'none' }}>
+          <Link to="/" style={{ color: '#b66a3c', textDecoration: 'none' }}>
             ← View all services
           </Link>
         </div>

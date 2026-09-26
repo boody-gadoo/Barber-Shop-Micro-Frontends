@@ -1,13 +1,13 @@
 {
   "name": "barber-shop-mfe",
   "version": "0.1.0",
-  "description": "Egyptian barber shop platform - Micro Frontends with Module Federation",
+  "description": "Egyptian barber shop platform - Micro Frontends with single-spa",
   "private": true,
   "scripts": {
-    "dev": "pnpm --filter=@shell/app dev",
+    "dev": "pnpm --parallel --filter=@shell/app --filter=@services-react/app --filter=@booking-angular/app dev",
     "dev:all": "pnpm run build && pnpm run preview:all",
     "preview:all": "pnpm --parallel --filter=@shell/app --filter=@services-react/app --filter=@booking-angular/app run preview",
-    "build": "pnpm --filter=@shell/app build && pnpm --filter=@services-react/app build && pnpm --filter=@booking-angular/app build",
+    "build": "pnpm --filter=@shell/app build && pnpm --filter=@services-react/app build && pnpm --filter=@services-react/app build:single-spa && pnpm --filter=@booking-angular/app build",
     "lint": "eslint apps packages --ext .ts,.tsx 2>/dev/null || true",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
@@ -20,7 +20,6 @@
     "preinstall": "node -v"
   },
   "devDependencies": {
-    "@angular-architects/module-federation": "^17.0.0",
     "@angular-builders/custom-webpack": "^17.0.0",
     "@playwright/test": "^1.40.0",
     "@types/node": "^20.9.0",
@@ -30,6 +29,12 @@
     "typescript": "5.3.3"
   },
   "dependencies": {
+    "@angular/common": "^17.3.12",
+    "@angular/compiler": "^17.3.12",
+    "@angular/core": "^17.3.12",
+    "single-spa": "^6.0.3",
+    "single-spa-angular": "^8.1.0",
+    "single-spa-react": "^6.0.1",
     "zone.js": "0.14.2"
   }
 }

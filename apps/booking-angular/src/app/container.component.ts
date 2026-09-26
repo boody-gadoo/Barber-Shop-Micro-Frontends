@@ -1,9 +1,5 @@
 import { Component } from '@angular/core';
 
-/**
- * Root container component for Module Federation remote
- * Wraps the booking application
- */
 @Component({
   selector: 'app-root',
   template: `
