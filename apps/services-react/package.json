@@ -2,10 +2,11 @@
   "name": "@services-react/app",
   "version": "0.0.1",
   "type": "module",
-  "description": "Services & Offers React MFE - Module Federation remote for barber shop",
+  "description": "Services & Offers React single-spa application",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:single-spa": "vite build --config vite.single-spa.config.ts",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src"
@@ -17,10 +18,10 @@
     "lucide-react": "^1.48.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-router-dom": "6.20.1"
+    "react-router-dom": "6.20.1",
+    "single-spa-react": "^6.0.1"
   },
   "devDependencies": {
-    "@originjs/vite-plugin-federation": "^1.4.1",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@vitejs/plugin-react": "^4.2.1",

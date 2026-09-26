@@ -54,7 +54,7 @@ export function OffersPage(): JSX.Element {
                 </div>
 
                 <Link
-                  to={`/services?code=${offer.code}`}
+                  to={`/?code=${offer.code}`}
                   className="offer-cta"
                   style={{ textDecoration: 'none', display: 'block' }}
                 >
@@ -69,7 +69,7 @@ export function OffersPage(): JSX.Element {
       {/* Back Link */}
       <div style={{ textAlign: 'center', padding: '40px 24px' }}>
         <Link
-          to="/services"
+          to="/"
           style={{
             color: '#b66a3c',
             textDecoration: 'none',

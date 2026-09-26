@@ -1,27 +1,8 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
-import federation from '@originjs/vite-plugin-federation';
 
 export default defineConfig({
-  plugins: [
-    react(),
-    federation({
-      name: 'shell',
-      filename: 'remoteEntry.js',
-      remotes: {
-        services: 'http://localhost:3002/assets/remoteEntry.js',
-        booking: 'http://localhost:3003/remoteEntry.js',
-      },
-      shared: {
-        react: { singleton: true, strictVersion: true },
-        'react-dom': { singleton: true, strictVersion: true },
-        'react-router-dom': { singleton: true, strictVersion: true },
-        '@design-tokens/core': { singleton: true, strictVersion: false },
-        '@api-contracts/core': { singleton: true, strictVersion: false },
-        '@shared-types/core': { singleton: true, strictVersion: false },
-      },
-    }),
-  ],
+  plugins: [react()],
   server: {
     port: 3000,
     cors: true,

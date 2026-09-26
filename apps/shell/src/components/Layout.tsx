@@ -8,6 +8,8 @@ export function Layout(): JSX.Element {
       <Header />
       <main className="main-content">
         <Outlet />
+        <div id="services-mount" className="single-spa-mount" />
+        <div id="booking-mount" className="single-spa-mount" />
       </main>
       <Footer />
     </div>

@@ -286,6 +286,6 @@ export class ConfirmationPageComponent implements OnInit {
 
   newBooking(): void {
     this.bookingService.resetBooking();
-    this.router.navigate(['/']);
+    this.router.navigate(['/booking']);
   }
 }

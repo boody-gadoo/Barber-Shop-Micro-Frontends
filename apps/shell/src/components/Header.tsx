@@ -11,7 +11,7 @@ const navLinks: NavLink[] = [
   { label: 'Home', labelAr: 'الرئيسية', path: '/' },
   { label: 'Services', labelAr: 'الخدمات', path: '/services' },
   { label: 'Barbers', labelAr: 'الحلاقون', path: '/barbers' },
-  { label: 'Offers', labelAr: 'العروض', path: '/offers' },
+  { label: 'Offers', labelAr: 'العروض', path: '/services/offers' },
   { label: 'Gallery', labelAr: 'الصور', path: '/gallery' },
   { label: 'About', labelAr: 'من نحن', path: '/about' },
   { label: 'Contact', labelAr: 'اتصل بنا', path: '/contact' },
